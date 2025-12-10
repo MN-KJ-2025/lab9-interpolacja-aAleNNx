@@ -8,17 +8,12 @@ import numpy as np
 
 
 def chebyshev_nodes(n: int = 10) -> np.ndarray | None:
-    """Funkcja generująca wektor węzłów Czebyszewa drugiego rodzaju (n,) 
-    i sortująca wynik od najmniejszego do największego węzła.
-
-    Args:
-        n (int): Liczba węzłów Czebyszewa.
-    
-    Returns:
-        (np.ndarray): Wektor węzłów Czebyszewa (n,).
-        Jeżeli dane wejściowe są niepoprawne funkcja zwraca `None`.
-    """
-    pass
+    if not isinstance(n, int) or n<=0:
+        return None
+    k = np.arange(0,n)
+    x = np.cos(k*np.pi/(n-1))
+    return np.array(x)
+print (chebyshev_nodes(3))
 
 
 def bar_cheb_weights(n: int = 10) -> np.ndarray | None:
@@ -31,7 +26,13 @@ def bar_cheb_weights(n: int = 10) -> np.ndarray | None:
         (np.ndarray): Wektor wag dla węzłów Czebyszewa (n,).
         Jeżeli dane wejściowe są niepoprawne funkcja zwraca `None`.
     """
-    pass
+    j = np.arange(n)
+    sigj = np.ones(n)
+    sigj[0] = 1/2
+    sigj[-1] = 1/2
+    return ((-1)**j)*sigj
+print(bar_cheb_weights(3))
+
 
 
 def barycentric_inte(
@@ -52,6 +53,8 @@ def barycentric_inte(
         (np.ndarray): Wektor wartości funkcji interpolującej (n,).
         Jeżeli dane wejściowe są niepoprawne funkcja zwraca `None`.
     """
+
+
     pass
 
 
@@ -71,4 +74,11 @@ def L_inf(
         (float): Wartość normy L-nieskończoność.
         Jeżeli dane wejściowe są niepoprawne funkcja zwraca `None`.
     """
-    pass
+
+    xr_arr = np.asarray(xr)
+    x_arr = np.asarray(x)
+
+    if xr_arr.shape != x_arr.shape:
+        return None
+
+    return float(np.max(np.abs(xr_arr - x_arr)))
