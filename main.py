@@ -6,13 +6,14 @@
 # =============================================================================
 import numpy as np
 
-
 def chebyshev_nodes(n: int = 10) -> np.ndarray | None:
     if not isinstance(n, int) or n<=0:
         return None
-    k = np.arange(0,n)
+    k = np.arange(n)
+    if n == 1:
+        return np.array([0.0])
     x = np.cos(k*np.pi/(n-1))
-    return np.array(x)
+    return x
 print (chebyshev_nodes(3))
 
 
@@ -53,9 +54,26 @@ def barycentric_inte(
         (np.ndarray): Wektor wartości funkcji interpolującej (n,).
         Jeżeli dane wejściowe są niepoprawne funkcja zwraca `None`.
     """
+    if not all(isinstance(arg, np.ndarray) for arg in [xi, yi, wi, x]):
+        return None
+    if xi.shape != yi.shape or xi.shape != wi.shape:
+        return None
+    
+    diff = x[:, None] - xi
+    eps = 1e-15
+    mask = np.abs(diff) < eps
+    diff[mask] = 1.0
+    kernels = wi / diff
+    
+    numerator = np.sum(kernels * yi, axis=1)
+    denominator = np.sum(kernels, axis=1)
+    result = numerator / denominator
 
+    x_indices, node_indices = np.where(mask)
+    result[x_indices] = yi[node_indices]
 
-    pass
+    return result
+
 
 
 def L_inf(
